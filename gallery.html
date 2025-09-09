@@ -4,6 +4,7 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>CV Cá Nhân</title>
+        <link rel="stylesheet" href="CSS/style.css">
     </head>
     <body>
         <!-- Navbar -->
@@ -28,47 +29,138 @@
                 <!-- Thay src/alt/caption theo ảnh của bạn -->
                 <figure class="gallery-item">
                     <img src="img/anh1.JPG"
-                        alt="Kỷ niệm 1 - Hội Khỏe Phù Đổng Lớp 10 Cấp 3" loading="lazy"
+                        alt="Kỷ niệm 1 - Hội Khỏe Phù Đổng Lớp 10 Cấp 3"
+                        loading="lazy"
                         data-caption="Mưa Hội Khỏe Phù Đổng" />
                     <figcaption>Mưa Hội Khỏe Phù Đổng</figcaption>
                 </figure>
 
                 <figure class="gallery-item">
                     <img src="img/anh2.JPG"
-                        alt="Kỷ niệm 2 - Học Quân Sự Năm Nhất Đại Học" loading="lazy"
+                        alt="Kỷ niệm 2 - Học Quân Sự Năm Nhất Đại Học"
+                        loading="lazy"
                         data-caption="Học Quân Sự" />
                     <figcaption>Học Quân Sự</figcaption>
                 </figure>
 
                 <figure class="gallery-item">
                     <img src="img/anh3.JPG"
-                        alt="Kỷ niệm 3 - Đường Sách Q1 TP.HCM 2023" loading="lazy"
+                        alt="Kỷ niệm 3 - Đường Sách Q1 TP.HCM 2023"
+                        loading="lazy"
                         data-caption="Năm Nhất Vào TP.HCM" />
                     <figcaption>Năm Nhất Vào TP.HCM</figcaption>
                 </figure>
 
                 <figure class="gallery-item">
-                    <img src="img/anh4.JPG" alt="Kỷ niệm 4 - Lớp Thực Hành Nhập Môn Lập Trình 2023"
+                    <img src="img/anh4.JPG"
+                        alt="Kỷ niệm 4 - Lớp Thực Hành Nhập Môn Lập Trình 2023"
                         loading="lazy" data-caption="Năm Nhất Đại Học" />
                     <figcaption>Năm Nhất Đại Học</figcaption>
                 </figure>
 
                 <figure class="gallery-item">
-                    <img src="img/anh5.PNG" alt="Kỷ niệm 5 - Tết Dương Lịch 2024 Với Best Friends"
+                    <img src="img/anh5.PNG"
+                        alt="Kỷ niệm 5 - Tết Dương Lịch 2024 Với Best Friends"
                         loading="lazy" data-caption="Tết Dương Lịch 2024" />
                     <figcaption>Tết Dương Lịch 2024</figcaption>
                 </figure>
 
                 <figure class="gallery-item">
-                    <img src="img/anh6.JPG" alt="Kỷ niệm 6 - Tết Âm Lịch 2025 Với Bạn Cấp 3"
+                    <img src="img/anh6.JPG"
+                        alt="Kỷ niệm 6 - Tết Âm Lịch 2025 Với Bạn Cấp 3"
                         loading="lazy" data-caption="Họp Lớp Đầu Năm" />
                     <figcaption>Họp Lớp Đầu Năm"</figcaption>
                 </figure>
-                
             </div>
         </section>
+
+        <div id="lightbox" class="lightbox" role="dialog" aria-hidden="true"
+            aria-label="Xem ảnh lớn">
+            <button class="lb-close" aria-label="Đóng (Esc)">✕</button>
+            <button class="lb-prev" aria-label="Ảnh trước">‹</button>
+            <div class="lb-content">
+                <img src alt />
+                <p class="lb-caption"></p>
+            </div>
+            <button class="lb-next" aria-label="Ảnh sau">›</button>
+        </div>
+
         <footer>
             <p>© 2025 - CV Cá Nhân</p>
         </footer>
+
+        <script>
+        // JS lightbox minimal, keyboard accessible
+        (function () {
+        const grid = document.querySelector('.gallery-grid');
+        const items = Array.from(document.querySelectorAll('.gallery-item img'));
+        const lightbox = document.getElementById('lightbox');
+        const lbImg = lightbox.querySelector('.lb-content img');
+        const lbCaption = lightbox.querySelector('.lb-caption');
+        const btnClose = document.querySelector('.lb-close');
+        const btnNext = document.querySelector('.lb-next');
+        const btnPrev = document.querySelector('.lb-prev');
+        let currentIndex = -1;
+
+        function openAt(index) {
+            const img = items[index];
+            if (!img) return;
+            lbImg.src = img.src;
+            lbImg.alt = img.alt || '';
+            lbCaption.textContent = img.dataset.caption || img.alt || '';
+            lightbox.setAttribute('aria-hidden', 'false');
+            lightbox.classList.add('open');
+            currentIndex = index;
+            // focus for accessibility
+            btnClose.focus();
+        }
+
+        function closeLB() {
+            lightbox.setAttribute('aria-hidden', 'true');
+            lightbox.classList.remove('open');
+            lbImg.src = '';
+            currentIndex = -1;
+        }
+
+        function next() {
+            if (currentIndex < items.length - 1) openAt(currentIndex + 1);
+            else openAt(0);
+        }
+        function prev() {
+            if (currentIndex > 0) openAt(currentIndex - 1);
+            else openAt(items.length - 1);
+        }
+
+        // click on thumbnail
+        items.forEach((img, idx) => {
+            img.setAttribute('tabindex', '0'); // keyboard focus
+            img.addEventListener('click', () => openAt(idx));
+            img.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault(); openAt(idx);
+            }
+            });
+        });
+
+        // buttons
+        btnClose.addEventListener('click', closeLB);
+        btnNext.addEventListener('click', next);
+        btnPrev.addEventListener('click', prev);
+
+        // keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (lightbox.classList.contains('open')) {
+            if (e.key === 'Escape') closeLB();
+            if (e.key === 'ArrowRight') next();
+            if (e.key === 'ArrowLeft') prev();
+            }
+        });
+
+        // click outside image closes
+        lightbox.addEventListener('click', (e) => {
+            if (e.target === lightbox) closeLB();
+        });
+        })();
+    </script>
     </body>
 </html>
